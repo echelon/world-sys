@@ -11,7 +11,7 @@ mod tests {
 
   // Adapted from /examples/codec_test/f0analysis.cpp
   #[test]
-  fn test_library() {
+  fn test_harvest() {
     let mut option = HarvestOption::default();
 
     unsafe {
@@ -34,6 +34,36 @@ mod tests {
     unsafe {
       // F0 analysis
       let number_of_frames = GetSamplesForHarvest(fs, x_length, option.frame_period);
+    }
+  }
+
+  #[test]
+  fn test_fft() {
+    let mut fft = fft_plan::default();
+
+    fft.n = 12;
+
+    unsafe {
+      //let mut fft = fft_plan_dft_c2r_1d();
+      //fft_destroy_plan(fft); // FIXME: Broken
+    }
+  }
+
+  #[test]
+  fn test_cheap_trick() {
+    let mut option = CheapTrickOption::default();
+
+    unsafe {
+      InitializeCheapTrickOption(1, &mut option);
+    }
+
+    option.q1 = 0.0f64;
+    option.f0_floor= 0.0f64;
+    option.fft_size= 1;
+
+    unsafe {
+      //let mut fft = fft_plan_dft_c2r_1d();
+      //fft_destroy_plan(fft); // FIXME: Broken
     }
   }
 }

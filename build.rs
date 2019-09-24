@@ -7,6 +7,9 @@ use std::path::PathBuf;
 fn main() {
     cc::Build::new()
         .cpp(true)
+        .file("World/src/cheaptrick.cpp")
+        .file("World/src/codec.cpp")
+        .file("World/src/fft.cpp")
         .file("World/src/harvest.cpp")
         .compile("libworld.a");
 
