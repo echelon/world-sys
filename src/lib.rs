@@ -1,6 +1,7 @@
-#![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
+#![allow(non_upper_case_globals)]
+#![allow(safe_extern_statics)]
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
@@ -33,7 +34,8 @@ mod tests {
 
     unsafe {
       // F0 analysis
-      let number_of_frames = GetSamplesForHarvest(fs, x_length, option.frame_period);
+      let number_of_frames = 
+        GetSamplesForHarvest(fs, x_length, option.frame_period);
     }
   }
 

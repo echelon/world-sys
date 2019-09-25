@@ -559,6 +559,18 @@ extern "C" {
     pub fn GetSuitableFFTSize(sample: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    pub fn MyMaxInt(x: ::std::os::raw::c_int, y: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn MyMaxDouble(x: f64, y: f64) -> f64;
+}
+extern "C" {
+    pub fn MyMinInt(x: ::std::os::raw::c_int, y: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn MyMinDouble(x: f64, y: f64) -> f64;
+}
+extern "C" {
     pub fn DCCorrection(
         input: *const f64,
         current_f0: f64,
@@ -578,6 +590,9 @@ extern "C" {
 }
 extern "C" {
     pub fn NuttallWindow(y_length: ::std::os::raw::c_int, y: *mut f64);
+}
+extern "C" {
+    pub fn GetSafeAperiodicity(x: f64) -> f64;
 }
 extern "C" {
     pub fn InitializeForwardRealFFT(
@@ -618,26 +633,80 @@ extern "C" {
 extern "C" {
     pub fn DestroyMinimumPhaseAnalysis(minimum_phase: *mut MinimumPhaseAnalysis);
 }
-pub const world_kCutOff: f64 = 50.0;
-pub const world_kFloorF0StoneMask: f64 = 40.0;
-pub const world_kPi: f64 = 3.141592653589793;
-pub const world_kMySafeGuardMinimum: f64 = 0.000000000001;
-pub const world_kEps: f64 = 0.0000000000000002220446049250313;
-pub const world_kFloorF0: f64 = 71.0;
-pub const world_kCeilF0: f64 = 800.0;
-pub const world_kDefaultF0: f64 = 500.0;
-pub const world_kLog2: f64 = 0.6931471805599453;
-pub const world_kMaximumValue: f64 = 100000.0;
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL7kCutOffE"]
+    pub static world_kCutOff: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL17kFloorF0StoneMaskE"]
+    pub static world_kFloorF0StoneMask: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL3kPiE"]
+    pub static world_kPi: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL19kMySafeGuardMinimumE"]
+    pub static world_kMySafeGuardMinimum: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL4kEpsE"]
+    pub static world_kEps: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL8kFloorF0E"]
+    pub static world_kFloorF0: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL7kCeilF0E"]
+    pub static world_kCeilF0: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL10kDefaultF0E"]
+    pub static world_kDefaultF0: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL5kLog2E"]
+    pub static world_kLog2: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL13kMaximumValueE"]
+    pub static world_kMaximumValue: f64;
+}
 pub const world_kHanning: ::std::os::raw::c_int = 1;
 pub const world_kBlackman: ::std::os::raw::c_int = 2;
-pub const world_kFrequencyInterval: f64 = 3000.0;
-pub const world_kUpperLimit: f64 = 15000.0;
-pub const world_kThreshold: f64 = 0.85;
-pub const world_kFloorF0D4C: f64 = 47.0;
-pub const world_kM0: f64 = 1127.01048;
-pub const world_kF0: f64 = 700.0;
-pub const world_kFloorFrequency: f64 = 40.0;
-pub const world_kCeilFrequency: f64 = 20000.0;
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL18kFrequencyIntervalE"]
+    pub static world_kFrequencyInterval: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL11kUpperLimitE"]
+    pub static world_kUpperLimit: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL10kThresholdE"]
+    pub static world_kThreshold: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL11kFloorF0D4CE"]
+    pub static world_kFloorF0D4C: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL3kM0E"]
+    pub static world_kM0: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL3kF0E"]
+    pub static world_kF0: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL15kFloorFrequencyE"]
+    pub static world_kFloorFrequency: f64;
+}
+extern "C" {
+    #[link_name = "\u{1}_ZN5worldL14kCeilFrequencyE"]
+    pub static world_kCeilFrequency: f64;
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct D4COption {
