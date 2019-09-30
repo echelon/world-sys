@@ -101,4 +101,22 @@ pub fn world_decompose(wav: Vec<f64>, fs: i32, frame_period: f64) -> DecomposeRe
   }
 }
 
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use std::mem;
 
+  #[test]
+  pub fn test_world_decompose() {
+    let mut audio = Vec::new();
+
+    for i in 0..10000 {
+      let v = (i % 100) as f64;
+      audio.push(v);
+    }
+    let result = world_decompose(audio, 16000, 10.0);
+
+    println!("Result a: {:?}", result.temporal_positions);
+    println!("Result b: {:?}", result.estimated_f0_contour);
+  }
+}
