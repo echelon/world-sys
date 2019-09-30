@@ -12,7 +12,7 @@ bindgen_options=""
 #header="/usr/local/include/world/harvest.h"
 header="wrapper.hpp"
 
-cmd="bindgen ${bindgen_options} ${header} --output src/bindgen.rs"
+cmd="bindgen ${bindgen_options} ${header} --with-derive-default --output src/bindgen.rs"
 echo ${cmd}
 ${cmd}
 

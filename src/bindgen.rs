@@ -4,7 +4,7 @@ pub const FFT_FORWARD: u32 = 1;
 pub const FFT_BACKWARD: u32 = 2;
 pub const FFT_ESTIMATE: u32 = 3;
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct CheapTrickOption {
     pub q1: f64,
     pub f0_floor: f64,
@@ -249,6 +249,11 @@ fn bindgen_test_layout_fft_plan() {
         )
     );
 }
+impl Default for fft_plan {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
 extern "C" {
     pub fn fft_plan_dft_1d(
         n: ::std::os::raw::c_int,
@@ -341,6 +346,11 @@ fn bindgen_test_layout_ForwardRealFFT() {
         )
     );
 }
+impl Default for ForwardRealFFT {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct InverseRealFFT {
@@ -402,6 +412,11 @@ fn bindgen_test_layout_InverseRealFFT() {
         )
     );
 }
+impl Default for InverseRealFFT {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct InverseComplexFFT {
@@ -462,6 +477,11 @@ fn bindgen_test_layout_InverseComplexFFT() {
             stringify!(inverse_fft)
         )
     );
+}
+impl Default for InverseComplexFFT {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -555,20 +575,13 @@ fn bindgen_test_layout_MinimumPhaseAnalysis() {
         )
     );
 }
+impl Default for MinimumPhaseAnalysis {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
+}
 extern "C" {
     pub fn GetSuitableFFTSize(sample: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn MyMaxInt(x: ::std::os::raw::c_int, y: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn MyMaxDouble(x: f64, y: f64) -> f64;
-}
-extern "C" {
-    pub fn MyMinInt(x: ::std::os::raw::c_int, y: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
-}
-extern "C" {
-    pub fn MyMinDouble(x: f64, y: f64) -> f64;
 }
 extern "C" {
     pub fn DCCorrection(
@@ -590,9 +603,6 @@ extern "C" {
 }
 extern "C" {
     pub fn NuttallWindow(y_length: ::std::os::raw::c_int, y: *mut f64);
-}
-extern "C" {
-    pub fn GetSafeAperiodicity(x: f64) -> f64;
 }
 extern "C" {
     pub fn InitializeForwardRealFFT(
@@ -633,82 +643,28 @@ extern "C" {
 extern "C" {
     pub fn DestroyMinimumPhaseAnalysis(minimum_phase: *mut MinimumPhaseAnalysis);
 }
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL7kCutOffE"]
-    pub static world_kCutOff: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL17kFloorF0StoneMaskE"]
-    pub static world_kFloorF0StoneMask: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL3kPiE"]
-    pub static world_kPi: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL19kMySafeGuardMinimumE"]
-    pub static world_kMySafeGuardMinimum: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL4kEpsE"]
-    pub static world_kEps: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL8kFloorF0E"]
-    pub static world_kFloorF0: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL7kCeilF0E"]
-    pub static world_kCeilF0: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL10kDefaultF0E"]
-    pub static world_kDefaultF0: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL5kLog2E"]
-    pub static world_kLog2: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL13kMaximumValueE"]
-    pub static world_kMaximumValue: f64;
-}
+pub const world_kCutOff: f64 = 50.0;
+pub const world_kFloorF0StoneMask: f64 = 40.0;
+pub const world_kPi: f64 = 3.141592653589793;
+pub const world_kMySafeGuardMinimum: f64 = 0.000000000001;
+pub const world_kEps: f64 = 0.0000000000000002220446049250313;
+pub const world_kFloorF0: f64 = 71.0;
+pub const world_kCeilF0: f64 = 800.0;
+pub const world_kDefaultF0: f64 = 500.0;
+pub const world_kLog2: f64 = 0.6931471805599453;
+pub const world_kMaximumValue: f64 = 100000.0;
 pub const world_kHanning: ::std::os::raw::c_int = 1;
 pub const world_kBlackman: ::std::os::raw::c_int = 2;
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL18kFrequencyIntervalE"]
-    pub static world_kFrequencyInterval: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL11kUpperLimitE"]
-    pub static world_kUpperLimit: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL10kThresholdE"]
-    pub static world_kThreshold: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL11kFloorF0D4CE"]
-    pub static world_kFloorF0D4C: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL3kM0E"]
-    pub static world_kM0: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL3kF0E"]
-    pub static world_kF0: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL15kFloorFrequencyE"]
-    pub static world_kFloorFrequency: f64;
-}
-extern "C" {
-    #[link_name = "\u{1}_ZN5worldL14kCeilFrequencyE"]
-    pub static world_kCeilFrequency: f64;
-}
+pub const world_kFrequencyInterval: f64 = 3000.0;
+pub const world_kUpperLimit: f64 = 15000.0;
+pub const world_kThreshold: f64 = 0.85;
+pub const world_kFloorF0D4C: f64 = 47.0;
+pub const world_kM0: f64 = 1127.01048;
+pub const world_kF0: f64 = 700.0;
+pub const world_kFloorFrequency: f64 = 40.0;
+pub const world_kCeilFrequency: f64 = 20000.0;
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct D4COption {
     pub threshold: f64,
 }
@@ -752,7 +708,7 @@ extern "C" {
     pub fn InitializeD4COption(option: *mut D4COption);
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct DioOption {
     pub f0_floor: f64,
     pub f0_ceil: f64,
@@ -855,7 +811,7 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 #[repr(C)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct HarvestOption {
     pub f0_floor: f64,
     pub f0_ceil: f64,
@@ -1386,6 +1342,11 @@ fn bindgen_test_layout_WorldSynthesizer() {
             stringify!(forward_real_fft)
         )
     );
+}
+impl Default for WorldSynthesizer {
+    fn default() -> Self {
+        unsafe { ::std::mem::zeroed() }
+    }
 }
 extern "C" {
     pub fn InitializeSynthesizer(

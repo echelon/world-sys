@@ -3,7 +3,8 @@
 #![allow(non_upper_case_globals)]
 #![allow(safe_extern_statics)]
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+//include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+include!("bindgen.rs");
 
 #[cfg(test)]
 mod tests {
