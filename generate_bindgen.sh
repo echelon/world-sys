@@ -12,7 +12,12 @@ bindgen_options=""
 #header="/usr/local/include/world/harvest.h"
 header="wrapper.hpp"
 
-cmd="bindgen ${bindgen_options} ${header} --with-derive-default --output src/bindgen.rs"
-echo ${cmd}
-${cmd}
+bindgen ${bindgen_options} \
+  ${header} \
+  --with-derive-default \
+  --output src/bindgen.rs
+  #--distrust-clang-mangling \
+  #--enable-cxx-namespaces \
+
+
 

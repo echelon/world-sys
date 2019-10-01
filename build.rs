@@ -38,12 +38,11 @@ fn main() {
     .file("World/src/synthesis.cpp")
     .file("World/src/synthesisrealtime.cpp")
     .warnings(false) // NB: warnings spam the build
-    //.compile("libworld.a");
     .compile("world");
     //.shared_flag(true)
+    //.compile("libworld.a");
     //.compile("libworld.so");
-  //
-  //
+
   // dylib,
   //println!("cargo:rustc-link-lib=world");
 
@@ -53,7 +52,7 @@ fn main() {
   //         out_path.as_path().to_str().clone().unwrap());
   //println!("cargo:rustc-link-lib=static=world");
 
-  let bindings = bindgen::Builder::default()
+  /*let bindings = bindgen::Builder::default()
     .header("wrapper.hpp")
     .header("World/src/world/constantnumbers.h")
     //.trust_clang_mangling(false)
@@ -69,12 +68,15 @@ fn main() {
 
   bindings
     .write_to_file(out_path.join("bindings.rs"))
-    .expect("Couldn't write bindings!");
+    .expect("Couldn't write bindings!");*/
 
   // static,
-  println!("cargo:rustc-link-search=native=/usr/local/lib");
-  println!("cargo:rustc-link-search=native={}",
-           out_path.as_path().to_str().clone().unwrap());
+  //println!("cargo:rustc-link-search=native=/usr/local/lib");
+  let lib_location = out_path.as_path().to_str().clone().unwrap();
+
+  println!("cargo:rustc-link-search=native={}", lib_location);
   println!("cargo:rustc-link-lib=static=world");
+  //println!("cargo:rustc-link-search={}", lib_location); 
+  //println!("cargo:rustc-link-lib=world");
 }
 
