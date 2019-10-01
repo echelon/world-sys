@@ -81,8 +81,13 @@ pub fn world_decompose(wav: Vec<f64>, fs: i32, frame_period: f64) -> DecomposeRe
   option.f0_floor = 71.0f64; // NB: pyworld default
   option.f0_ceil = 800.0f64; // NB: pyworld default
 
-  let mut estimated_f0_contour : Vec<f64> = Vec::new();
-  let mut temporal_positions : Vec<f64> = Vec::new();
+  // Nothing appears to get allocated if I use 'with_capacity':
+  // let mut estimated_f0_contour : Vec<f64> = Vec::with_capacity(wav.len());
+  // let mut temporal_positions : Vec<f64> = Vec::with_capacity(wav.len());
+
+  // But I'm not sure these are the correct lengths...
+  let mut estimated_f0_contour : Vec<f64> = vec![0.0f64; wav.len()];
+  let mut temporal_positions : Vec<f64> = vec![0.0f64; wav.len()];
 
   unsafe {
     Harvest(
@@ -114,9 +119,16 @@ mod tests {
       let v = (i % 100) as f64;
       audio.push(v);
     }
-    //let result = world_decompose(audio, 16000, 10.0);
 
-    //println!("Result a: {:?}", result.temporal_positions);
-    //println!("Result b: {:?}", result.estimated_f0_contour);
+    let result = world_decompose(audio, 16000, 10.0);
+
+    println!("Result a: {:?}", result.temporal_positions);
+    println!("Result b: {:?}", result.estimated_f0_contour);
+
+    assert_eq!(false, result.temporal_positions.is_empty());
+    assert_eq!(false, result.estimated_f0_contour.is_empty());
+
+    // NB: This may not be correct
+    assert_ne!(0.0f64, result.estimated_f0_contour[0]);
   }
 }

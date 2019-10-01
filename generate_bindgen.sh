@@ -7,9 +7,6 @@ if ! which bindgen > /dev/null; then
     exit 1
 fi
 
-bindgen_options=""
-#header="./World/src/world/harvest.h"
-#header="/usr/local/include/world/harvest.h"
 header="wrapper.hpp"
 
 bindgen ${bindgen_options} \

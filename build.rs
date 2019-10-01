@@ -70,8 +70,9 @@ fn main() {
     .write_to_file(out_path.join("bindings.rs"))
     .expect("Couldn't write bindings!");
 
-  // static,
+  // static, built with makefile instead of Rust's bindgen:
   println!("cargo:rustc-link-search=native=/usr/local/lib");
+
   let lib_location = out_path.as_path().to_str().clone().unwrap();
 
   //println!("cargo:rustc-link-search=native={}", lib_location);

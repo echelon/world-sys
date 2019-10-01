@@ -18,6 +18,7 @@ both configurations.
 NB: `LIBCLANG_PATH` is critical to set!
 
 - `LIBCLANG_PATH=/usr/lib/llvm-3.9/lib/` on the laptop
+- `LIBCLANG_PATH=/usr/lib/llvm-3.9/lib cargo test`
 
 Also appears to work if I build the library independent of Rust bindgen, then statically link 
 from build.rs:
