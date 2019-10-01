@@ -52,7 +52,7 @@ fn main() {
   //         out_path.as_path().to_str().clone().unwrap());
   //println!("cargo:rustc-link-lib=static=world");
 
-  /*let bindings = bindgen::Builder::default()
+  let bindings = bindgen::Builder::default()
     .header("wrapper.hpp")
     .header("World/src/world/constantnumbers.h")
     //.trust_clang_mangling(false)
@@ -68,7 +68,7 @@ fn main() {
 
   bindings
     .write_to_file(out_path.join("bindings.rs"))
-    .expect("Couldn't write bindings!");*/
+    .expect("Couldn't write bindings!");
 
   // static,
   //println!("cargo:rustc-link-search=native=/usr/local/lib");
