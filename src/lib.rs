@@ -6,7 +6,7 @@
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 //include!("bindgen.rs");
 
-//pub mod extras;
+pub mod extras;
 
 #[cfg(test)]
 mod tests {
@@ -24,7 +24,7 @@ mod tests {
 
     option.frame_period = 5.0;
     option.f0_floor = world_kFloorF0;
-    //option.f0_ceil = world_kCeilF0;
+    option.f0_ceil = world_kCeilF0;
 
     //HarvestOption option = { 0 };
     /*InitializeHarvestOption(&option);

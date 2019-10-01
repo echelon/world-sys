@@ -19,6 +19,11 @@ NB: `LIBCLANG_PATH` is critical to set!
 
 - `LIBCLANG_PATH=/usr/lib/llvm-3.9/lib/` on the laptop
 
+Also appears to work if I build the library independent of Rust bindgen, then statically link 
+from build.rs:
+
+`println!("cargo:rustc-link-search=native=/usr/local/lib");`
+
 Debugging
 ---------
 

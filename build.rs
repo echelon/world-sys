@@ -59,7 +59,7 @@ fn main() {
     //.enable_cxx_namespaces()
     .derive_debug(true)
     .derive_default(true)
-    //.generate_comments(true)
+    .generate_comments(true)
     .clang_arg("-x")
     .clang_arg("c++")
     .clang_arg("-std=c++14")
@@ -71,11 +71,11 @@ fn main() {
     .expect("Couldn't write bindings!");
 
   // static,
-  //println!("cargo:rustc-link-search=native=/usr/local/lib");
+  println!("cargo:rustc-link-search=native=/usr/local/lib");
   let lib_location = out_path.as_path().to_str().clone().unwrap();
 
-  println!("cargo:rustc-link-search=native={}", lib_location);
-  println!("cargo:rustc-link-lib=static=world");
+  //println!("cargo:rustc-link-search=native={}", lib_location);
+  //println!("cargo:rustc-link-lib=static=world");
   //println!("cargo:rustc-link-search={}", lib_location); 
   //println!("cargo:rustc-link-lib=world");
 }

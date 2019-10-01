@@ -114,9 +114,9 @@ mod tests {
       let v = (i % 100) as f64;
       audio.push(v);
     }
-    let result = world_decompose(audio, 16000, 10.0);
+    //let result = world_decompose(audio, 16000, 10.0);
 
-    println!("Result a: {:?}", result.temporal_positions);
-    println!("Result b: {:?}", result.estimated_f0_contour);
+    //println!("Result a: {:?}", result.temporal_positions);
+    //println!("Result b: {:?}", result.estimated_f0_contour);
   }
 }
