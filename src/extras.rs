@@ -1,4 +1,9 @@
-//include!("bindgen.rs");
+//! Extras
+//!
+//! These are things found in CycleGAN and not present in WORLD
+//! or its Python bindings.
+//!
+
 use super::GetSamplesForHarvest;
 use super::Harvest;
 use super::HarvestOption;
@@ -6,8 +11,14 @@ use super::InitializeHarvestOption;
 
 use std::os::raw::c_int;
 
-/*
+use core::*;
 
+
+pub struct DecomposeResult {
+}
+
+
+/*
 def world_decompose(wav, fs, frame_period = 5.0):
 
     # Decompose speech signal into f0, spectral envelope and aperiodicity using WORLD
@@ -17,44 +28,7 @@ def world_decompose(wav, fs, frame_period = 5.0):
     ap = pyworld.d4c(wav, f0, timeaxis, fs)
 
     return f0, timeaxis, sp, ap
-
-
-    // pyworld.harvest --
-    Harvest F0 extraction algorithm.
-        Parameters
-        ----------
-        x : ndarray
-            Input waveform signal.
-        fs : int
-            Sample rate of input signal in Hz.
-        f0_floor : float
-            Lower F0 limit in Hz.
-            Default: 71.0
-        f0_ceil : float
-            Upper F0 limit in Hz.
-            Default: 800.0
-        frame_period : float
-            Period between consecutive frames in milliseconds.
-            Default: 5.0
-
-        Returns
-        -------
-        f0 : ndarray
-            Estimated F0 contour.
-        temporal_positions : ndarray
-            Temporal position of each frame.
 */
-
-/**
- * Decompose
- * fs: sample rate in Hz
- */
-
-pub struct DecomposeResult {
-  pub estimated_f0_contour: Vec<f64>,
-  pub temporal_positions: Vec<f64>,
-}
-
 
 /**
  * WORLD decompose.
@@ -63,7 +37,7 @@ pub struct DecomposeResult {
  * - frame_period: period between consecutive frames in milliseconds.
  */
 pub fn world_decompose(wav: Vec<f64>, fs: i32, frame_period: f64) -> DecomposeResult {
-  // https://s3.amazonaws.com/temp.michaelfbryan.com/arrays/index.html
+  /*// https://s3.amazonaws.com/temp.michaelfbryan.com/arrays/index.html
   /*
         x: *const f64,
         x_length: ::std::os::raw::c_int,
@@ -103,7 +77,32 @@ pub fn world_decompose(wav: Vec<f64>, fs: i32, frame_period: f64) -> DecomposeRe
   DecomposeResult {
     estimated_f0_contour,
     temporal_positions,
-  }
+  }*/
+  DecomposeResult {}
+}
+
+/*
+def wav_padding(wav, sr, frame_period, multiple = 4):
+    assert wav.ndim == 1
+    num_frames = len(wav)
+    num_frames_padded = int((np.ceil((np.floor(num_frames / (sr * frame_period / 1000)) + 1) / multiple + 1) * multiple - 1) * (sr * frame_period / 1000))
+    num_frames_diff = num_frames_padded - num_frames
+    num_pad_left = num_frames_diff // 2
+    num_pad_right = num_frames_diff - num_pad_left
+    wav_padded = np.pad(wav, (num_pad_left, num_pad_right), 'constant', constant_values = 0)
+
+    return wav_padded
+*/
+/**
+ * wav padding
+ - NB: Guessing that frame_period is "frame_period: period between consecutive frames in milliseconds."
+ - Multiple '4' default
+*/
+
+pub fn wav_padding(wav: Vec<f64>, frame_period: f64, multiple: Option<i64>) {
+  let multiple = multiple.unwrap_or(4);
+
+  // TODO
 }
 
 #[cfg(test)]
@@ -113,22 +112,6 @@ mod tests {
 
   #[test]
   pub fn test_world_decompose() {
-    let mut audio = Vec::new();
-
-    for i in 0..10000 {
-      let v = (i % 100) as f64;
-      audio.push(v);
-    }
-
-    let result = world_decompose(audio, 16000, 10.0);
-
-    println!("Result a: {:?}", result.temporal_positions);
-    println!("Result b: {:?}", result.estimated_f0_contour);
-
-    assert_eq!(false, result.temporal_positions.is_empty());
-    assert_eq!(false, result.estimated_f0_contour.is_empty());
-
-    // NB: This may not be correct
-    assert_ne!(0.0f64, result.estimated_f0_contour[0]);
+    // TODO
   }
 }

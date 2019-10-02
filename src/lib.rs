@@ -8,6 +8,7 @@ include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 // Codegen from `generate_bindgen.sh`:
 //include!("bindgen.rs");
 
+pub mod core;
 pub mod extras;
 
 #[cfg(test)]
