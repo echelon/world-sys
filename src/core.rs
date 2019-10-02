@@ -49,9 +49,11 @@ pub struct HarvestResult {
 }
 
 /**
- * Harvest
+ * Harvest: F0 extraction algorithm
  * - wav: input audio signal
- * - fs: input sample rate in Hz
+ * - fs: sample rate of input signal in Hz
+ * - f0_floor: lower F0 limit in Hz
+ * - f0_ceil: upper F0 limit in Hz
  * - frame_period: period between consecutive frames in milliseconds.
  */
 pub fn harvest(wav: Vec<f64>,
