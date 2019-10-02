@@ -3,10 +3,10 @@
 #![allow(non_upper_case_globals)]
 #![allow(safe_extern_statics)]
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+//include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 // Codegen from `generate_bindgen.sh`:
-//include!("bindgen.rs");
+include!("bindgen.rs");
 
 pub mod core;
 pub mod extras;
