@@ -36,6 +36,12 @@ use super::Harvest;
 use super::HarvestOption;
 use super::InitializeHarvestOption;
 
+// Synthesis
+use super::Synthesis2; // TODO: Used?
+use super::Synthesis;
+use super::WorldSynthesizer; // TODO: Used? Looks complicated.
+use super::InitializeSynthesizer;
+
 /*
 // pyworld.cheaptrick
 def cheaptrick(*args, **kwargs): # real signature unknown
@@ -315,6 +321,43 @@ pub fn decode_spectral_envelope_result() -> DecodeSpectralEnvelopeResult {
 }
 
 /*
+def get_cheaptrick_fft_size(*args, **kwargs): # real signature unknown
+    """
+    Calculate suitable FFT size for CheapTrick given F0 floor.
+
+        Parameters
+        ----------
+        fs : int
+            Sample rate of input signal in Hz.
+        f0_floor : float
+            Lower F0 limit in Hz. The required FFT size is a direct
+            consequence of the F0 floor used.
+            Default: 71.0
+
+        Returns
+        -------
+        fft_size : int
+            Resulting FFT size.
+    """
+    pass
+
+    pub fn GetFFTSizeForCheapTrick(
+        fs: ::std::os::raw::c_int,
+        option: *const CheapTrickOption,
+    ) -> ::std::os::raw::c_int;
+*/
+
+pub struct GetCheaptrickFftSizeResult {
+  pub fft_size: i64,
+}
+
+pub fn get_cheaptrick_fft_size() -> GetCheaptrickFftSizeResult {
+  GetCheaptrickFftSizeResult {
+    fft_size: 0,
+  }
+}
+
+/*
 // pyworld.harvest
 def harvest(*args, **kwargs): # real signature unknown
     """
@@ -398,6 +441,57 @@ pub fn harvest(wav: Vec<f64>,
   HarvestResult {
     estimated_f0_contour,
     temporal_positions,
+  }
+}
+
+/*
+def synthesize(*args, **kwargs): # real signature unknown
+    """
+    WORLD synthesis from parametric representation.
+
+        Parameters
+        ----------
+        f0 : ndarray
+            Input F0 contour.
+        spectrogram : ndarray
+            Spectral envelope.
+        aperiodicity : ndarray
+            Aperodicity envelope.
+        fs : int
+            Sample rate of input signal in Hz.
+        frame_period : float
+            Period between consecutive frames in milliseconds.
+            Default: 5.0
+
+        Returns
+        -------
+        y : ndarray
+            Output waveform signal.
+    """
+    pass
+
+    pub fn Synthesis(
+        f0: *const f64,
+        f0_length: ::std::os::raw::c_int,
+        spectrogram: *const *const f64,
+        aperiodicity: *const *const f64,
+        fft_size: ::std::os::raw::c_int,
+        frame_period: f64,
+        fs: ::std::os::raw::c_int,
+        y_length: ::std::os::raw::c_int,
+        y: *mut f64,
+    );
+
+    pub fn Synthesis2(synth: *mut WorldSynthesizer) -> ::std::os::raw::c_int;
+*/
+
+pub struct SynthesizeResult {
+  output_waveform: Vec<f64>,
+}
+
+pub fn synthesize() -> SynthesizeResult {
+  SynthesizeResult {
+    output_waveform: vec![],
   }
 }
 
