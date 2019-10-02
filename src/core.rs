@@ -291,19 +291,36 @@ pub fn d4c(wav: Vec<f64>,
            fft_size: Option<i32>) -> D4CResult {
 
   // Pyworld Defaults
+  let q1 = q1.unwrap_or(-0.15f64);
   let threshold = threshold.unwrap_or(world_kThreshold); // default: 0.85
+  let fft_size = match fft_size {
+    Some(f) => f,
+    None => 0, // TODO: null?
+  };
 
   let mut option = D4COption::default();
   option.threshold = threshold;
 
-  // TODO
-  /*unsafe {
+  // FIXME -- Not sure this is correct allocation!
+  // But I'm not sure these are the correct lengths...
+  let mut aperiodicity: Vec<f64> = vec![0.0f64; wav.len()];
+
+  unsafe {
     D4C(
+      wav.as_ptr(),
+      wav.len() as c_int,
+      fs as c_int,
+      temporal_postions.as_ptr(),
+      f0.as_ptr(),
+      f0.len() as c_int,
+      fft_size as c_int,
+      &option,
+      aperiodicity.as_mut_ptr() as *mut _,
     );
-  }*/
+  }
 
   D4CResult {
-    aperiodicity: vec![],
+    aperiodicity,
   }
 }
 
