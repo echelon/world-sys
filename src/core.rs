@@ -43,9 +43,6 @@ def harvest(*args, **kwargs): # real signature unknown
     pass
 */
 
-pub fn pyworld_harvest() {
-}
-
 pub struct HarvestResult {
   pub estimated_f0_contour: Vec<f64>,
   pub temporal_positions: Vec<f64>,
@@ -57,19 +54,30 @@ pub struct HarvestResult {
  * - fs: input sample rate in Hz
  * - frame_period: period between consecutive frames in milliseconds.
  */
-pub fn harvest(wav: Vec<f64>, fs: i32, frame_period: f64) -> HarvestResult {
+pub fn harvest(wav: Vec<f64>,
+               fs: i32,
+               f0_floor: Option<f64>,
+               f0_ceil: Option<f64>,
+               frame_period: Option<f64>) -> HarvestResult {
+
+  // Pyworld Defaults
+  let f0_floor = f0_floor.unwrap_or(71.0f64);
+  let f0_ceil = f0_ceil.unwrap_or(800.0f64);
+  let frame_period = frame_period.unwrap_or(5.0f64);
+
   let mut option = HarvestOption::default();
 
   println!("HarvestOption default: {:?}", option);
 
   option.frame_period = frame_period;
-  option.f0_floor = 71.0f64; // NB: pyworld default
-  option.f0_ceil = 800.0f64; // NB: pyworld default
+  option.f0_floor = f0_floor;
+  option.f0_ceil = f0_ceil;
 
   // Nothing appears to get allocated if I use 'with_capacity':
   // let mut estimated_f0_contour : Vec<f64> = Vec::with_capacity(wav.len());
   // let mut temporal_positions : Vec<f64> = Vec::with_capacity(wav.len());
 
+  // FIXME -- Not sure this is correct allocation!
   // But I'm not sure these are the correct lengths...
   let mut estimated_f0_contour : Vec<f64> = vec![0.0f64; wav.len()];
   let mut temporal_positions : Vec<f64> = vec![0.0f64; wav.len()];
@@ -105,7 +113,7 @@ mod tests {
       audio.push(v);
     }
 
-    let result = harvest(audio, 16000, 10.0);
+    let result = harvest(audio, 16000, None, None, Some(10.0));
 
     println!("Result a: {:?}", result.temporal_positions);
     println!("Result b: {:?}", result.estimated_f0_contour);
