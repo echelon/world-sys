@@ -122,7 +122,10 @@ pub fn cheaptrick(wav: Vec<f64>,
   let mut option = CheapTrickOption::default();
   option.q1 = q1;
   option.f0_floor = f0_floor;
-  //option.fft_size = fft_size; // TODO: How to make this optional?
+  option.fft_size = match fft_size {
+    Some(f) => f,
+    None => 0, // TODO: null?
+  };
 
   // FIXME -- Not sure this is correct allocation!
   // But I'm not sure these are the correct lengths...
@@ -178,10 +181,35 @@ def code_spectral_envelope(*args, **kwargs): # real signature unknown
 */
 
 pub struct CodeSpectralEnvelopeResult {
-  pub coded_spectral_envelope: Vec<f64>,
+  pub coded_spectral_envelope: Vec<Vec<f64>>,
 }
 
-pub fn code_spectral_envelope() -> CodeSpectralEnvelopeResult {
+/**
+ * CodeSpectralEnvelope: reduce dimensionality of spectral envelope
+ * - spectrogram
+ * - fs: sample rate of input signal in Hz
+ * - number_of_dimensions: number of dimensions of coded spectral envelope
+ */
+pub fn code_spectral_envelope(spectrogram: Vec<Vec<f64>>,
+                              fs: i32,
+                              number_of_dimensions: u32) -> CodeSpectralEnvelopeResult {
+
+  let fft_size = 1; // TODO
+
+  // FIXME -- Not sure this is correct allocation!
+  // But I'm not sure these are the correct lengths...
+  //let mut coded_spectral_envelope: Vec<Vec<f64>> = vec![0.0f64; spectrogram.len()];
+
+  /*unsafe {
+    CodeSpectralEnvelope(
+      spectrogram.as_ptr(),
+      spectrogram.len() as c_int, //FIXME: WAT f0_length!??!
+      fs as c_int,
+      fft_size as c_int,
+      number_of_dimensions as c_int,
+      coded_spectral_envelope.as_mut_ptr() as *mut _,
+    );
+  }*/
 
   CodeSpectralEnvelopeResult {
     coded_spectral_envelope: vec![],
