@@ -123,7 +123,6 @@ pub fn cheaptrick(wav: Vec<f64>,
   let f0_floor = f0_floor.unwrap_or(world_kFloorF0); // default: 71.0
 
   let mut option = CheapTrickOption::default();
-
   unsafe {
     InitializeCheapTrickOption(fs, &mut option);
   }
@@ -169,9 +168,6 @@ pub fn cheaptrick(wav: Vec<f64>,
     for i in range(f0_length):
         cpp_spectrogram[i] = &spectrogram[i, 0]
 
-    CheapTrick(&x[0], x_length, fs, &temporal_positions[0],
-        &f0[0], f0_length, &option, cpp_spectrogram)
-    return np.array(spectrogram, dtype=np.float64)
   */
 
   // FIXME -- Not sure this is correct allocation!
@@ -180,6 +176,11 @@ pub fn cheaptrick(wav: Vec<f64>,
   let size = f0.len() * (fft_size/2 + 1) as usize;
   let mut spectrogram: Vec<f64> = vec![0.0f64; size];
 
+  /*
+    CheapTrick(&x[0], x_length, fs, &temporal_positions[0],
+        &f0[0], f0_length, &option, cpp_spectrogram)
+    return np.array(spectrogram, dtype=np.float64)
+  */
   /*unsafe {
     CheapTrick(
       wav.as_ptr(),
@@ -188,7 +189,7 @@ pub fn cheaptrick(wav: Vec<f64>,
       temporal_postions.as_ptr(),
       f0.as_ptr(),
       f0.len() as c_int,
-      &mut option,
+      &option,
       spectrogram.as_mut_ptr() as *mut _,
     );
   }*/
@@ -337,7 +338,7 @@ pub fn d4c(wav: Vec<f64>,
            fs: i32,
            q1: Option<f64>,
            threshold: Option<f64>,
-           fft_size: Option<i64>) -> D4CResult {
+           fft_size: Option<i32>) -> D4CResult {
 
   // Pyworld Defaults
   let q1 = q1.unwrap_or(-0.15f64);
@@ -352,7 +353,8 @@ pub fn d4c(wav: Vec<f64>,
         else:
             fft_size0 = fft_size
       */
-      let result = get_cheaptrick_fft_size(); // TODO
+      let default_f0_floor = world_kFloorF0; // default: 71.0
+      let result = get_cheaptrick_fft_size(fs, Some(default_f0_floor));
       result.fft_size
     },
   };
@@ -452,12 +454,44 @@ def get_cheaptrick_fft_size(*args, **kwargs): # real signature unknown
 */
 
 pub struct GetCheaptrickFftSizeResult {
-  pub fft_size: i64,
+  pub fft_size: i32,
 }
 
-pub fn get_cheaptrick_fft_size() -> GetCheaptrickFftSizeResult {
+pub fn get_cheaptrick_fft_size(fs: i32,
+                               f0_floor: Option<f64>) -> GetCheaptrickFftSizeResult {
+
+  let f0_floor = f0_floor.unwrap_or(world_kFloorF0); // default: 71.0
+
+  let mut option = CheapTrickOption::default();
+  option.f0_floor = f0_floor;
+
+  let fft_size = unsafe {
+    GetFFTSizeForCheapTrick(fs, &option)
+  };
+
+  /*
+  def get_cheaptrick_fft_size(fs, f0_floor=default_f0_floor):
+    """Calculate suitable FFT size for CheapTrick given F0 floor.
+    Parameters
+    ----------
+    fs : int
+        Sample rate of input signal in Hz.
+    f0_floor : float
+        Lower F0 limit in Hz. The required FFT size is a direct
+        consequence of the F0 floor used.
+        Default: 71.0
+    Returns
+    -------
+    fft_size : int
+        Resulting FFT size.
+    """
+    cdef CheapTrickOption option
+    option.f0_floor = f0_floor
+    cdef int fft_size = GetFFTSizeForCheapTrick(fs, &option)
+    return fft_size
+  */
   GetCheaptrickFftSizeResult {
-    fft_size: 0,
+    fft_size,
   }
 }
 
@@ -654,6 +688,24 @@ mod tests {
     let result = cheaptrick(audio, f0, temporal, 16000, None, None, None);
 
     println!("Result spectrogram: {:?}", result.spectrogram);
+  }
+
+  #[test]
+  pub fn test_d4c() {
+    let mut audio = Vec::new();
+
+    for i in 0..500 {
+      let v = (i % 100) as f64;
+      audio.push(v);
+    }
+
+    let f0 = audio.clone();
+    let temporal = audio.clone();
+
+    let result = d4c(audio, f0, temporal, 16000, None, None, None);
+
+    println!("Result aperiod len: {:?}", result.aperiodicity.len());
+    println!("Result aperiod first item: {:?}", result.aperiodicity[0]);
   }
 
   #[test]
