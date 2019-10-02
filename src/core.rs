@@ -123,16 +123,62 @@ pub fn cheaptrick(wav: Vec<f64>,
   let f0_floor = f0_floor.unwrap_or(world_kFloorF0); // default: 71.0
 
   let mut option = CheapTrickOption::default();
+
+  unsafe {
+    InitializeCheapTrickOption(fs, &mut option);
+  }
+
   option.q1 = q1;
-  option.f0_floor = f0_floor;
-  option.fft_size = match fft_size {
-    Some(f) => f,
-    None => 0, // TODO: null?
+
+  let fft_size = match fft_size {
+    Some(fft_size) => {
+      // NB: From pyworld --
+      // the f0_floor used by CheapTrick() will be re-compute from this given fft_size
+      fft_size
+    },
+    None => {
+      // NB: From pyworld --
+      // CheapTrickOption.f0_floor is only used in GetFFTSizeForCheapTrick()
+      option.f0_floor = f0_floor;
+      unsafe {
+        GetFFTSizeForCheapTrick(fs, &option)
+      }
+    },
   };
+
+  option.fft_size = fft_size;
+
+  /*
+    cdef CheapTrickOption option
+    InitializeCheapTrickOption(fs, &option)
+    option.q1 = q1
+    if fft_size is None:
+        option.f0_floor = f0_floor  # CheapTrickOption.f0_floor is only used in GetFFTSizeForCheapTrick()
+        option.fft_size = GetFFTSizeForCheapTrick(fs, &option)
+    else:
+        option.fft_size = fft_size
+        # the f0_floor used by CheapTrick() will be re-compute from this given fft_size
+    cdef int x_length = <int>len(x)
+    cdef int f0_length = <int>len(f0)
+
+    cdef double[:, ::1] spectrogram = np.zeros((f0_length, option.fft_size//2 + 1),
+                                               dtype=np.dtype('float64'))
+    cdef np.intp_t[:] tmp = np.zeros(f0_length, dtype=np.intp)
+    cdef double **cpp_spectrogram = <double**> (<void*> &tmp[0])
+    cdef np.intp_t i
+    for i in range(f0_length):
+        cpp_spectrogram[i] = &spectrogram[i, 0]
+
+    CheapTrick(&x[0], x_length, fs, &temporal_positions[0],
+        &f0[0], f0_length, &option, cpp_spectrogram)
+    return np.array(spectrogram, dtype=np.float64)
+  */
 
   // FIXME -- Not sure this is correct allocation!
   // But I'm not sure these are the correct lengths...
-  let mut spectrogram: Vec<f64> = vec![0.0f64; wav.len()];
+  // pyworld shape is: (f0_length, option.fft_size//2 + 1)
+  let size = f0.len() * (fft_size/2 + 1) as usize;
+  let mut spectrogram: Vec<f64> = vec![0.0f64; size];
 
   /*unsafe {
     CheapTrick(
@@ -291,14 +337,24 @@ pub fn d4c(wav: Vec<f64>,
            fs: i32,
            q1: Option<f64>,
            threshold: Option<f64>,
-           fft_size: Option<i32>) -> D4CResult {
+           fft_size: Option<i64>) -> D4CResult {
 
   // Pyworld Defaults
   let q1 = q1.unwrap_or(-0.15f64);
   let threshold = threshold.unwrap_or(world_kThreshold); // default: 0.85
+
   let fft_size = match fft_size {
     Some(f) => f,
-    None => 0, // TODO: null?
+    None => {
+      /*
+        if fft_size is None:
+            fft_size0 = get_cheaptrick_fft_size(fs, default_f0_floor)
+        else:
+            fft_size0 = fft_size
+      */
+      let result = get_cheaptrick_fft_size(); // TODO
+      result.fft_size
+    },
   };
 
   let mut option = D4COption::default();
@@ -587,7 +643,7 @@ mod tests {
   pub fn test_cheaptrick() {
     let mut audio = Vec::new();
 
-    for i in 0..10000 {
+    for i in 0..500 {
       let v = (i % 100) as f64;
       audio.push(v);
     }
