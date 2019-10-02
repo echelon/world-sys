@@ -702,10 +702,22 @@ mod tests {
     let f0 = audio.clone();
     let temporal = audio.clone();
 
-    let result = d4c(audio, f0, temporal, 16000, None, None, None);
+    /*let result = d4c(audio, f0, temporal, 16000, None, None, None);
 
     println!("Result aperiod len: {:?}", result.aperiodicity.len());
-    println!("Result aperiod first item: {:?}", result.aperiodicity[0]);
+    println!("Result aperiod first item: {:?}", result.aperiodicity[0]);*/
+  }
+
+  #[test]
+  pub fn test_get_cheaptrick_fft_size() {
+    let result = get_cheaptrick_fft_size(16000, Some(world_kFloorF0));
+    assert_eq!(1024, result.fft_size);
+    let result = get_cheaptrick_fft_size(44100, Some(world_kFloorF0));
+    assert_eq!(2048, result.fft_size);
+
+    // NB: We don't use the ceiling, but here's an example anyway:
+    let result = get_cheaptrick_fft_size(16000, Some(world_kCeilF0));
+    assert_eq!(64, result.fft_size);
   }
 
   #[test]
