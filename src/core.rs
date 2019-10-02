@@ -4,6 +4,12 @@
 //! the 'pyworld' bindings.
 //!
 
+use std::os::raw::c_int;
+
+// Constants
+use super::world_kCeilF0;
+use super::world_kFloorF0;
+
 // CheapTrick
 use super::CheapTrick;
 use super::CheapTrickOption;
@@ -16,8 +22,6 @@ use super::GetSamplesForHarvest;
 use super::Harvest;
 use super::HarvestOption;
 use super::InitializeHarvestOption;
-
-use std::os::raw::c_int;
 
 /*
 // pyworld.cheaptrick
@@ -94,7 +98,7 @@ pub fn cheaptrick(wav: Vec<f64>,
 
   // Defaults
   let q1 = q1.unwrap_or(-0.15f64);
-  let f0_floor = f0_floor.unwrap_or(71.0f64);
+  let f0_floor = f0_floor.unwrap_or(world_kFloorF0); // default: 71.0
 
   let mut option = CheapTrickOption::default();
   option.q1 = q1;
@@ -175,8 +179,8 @@ pub fn harvest(wav: Vec<f64>,
                frame_period: Option<f64>) -> HarvestResult {
 
   // Pyworld Defaults
-  let f0_floor = f0_floor.unwrap_or(71.0f64);
-  let f0_ceil = f0_ceil.unwrap_or(800.0f64);
+  let f0_floor = f0_floor.unwrap_or(world_kFloorF0); // default: 71.0
+  let f0_ceil = f0_ceil.unwrap_or(world_kCeilF0); // default: 800.0
   let frame_period = frame_period.unwrap_or(5.0f64);
 
   let mut option = HarvestOption::default();
