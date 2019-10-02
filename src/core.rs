@@ -345,14 +345,8 @@ pub fn d4c(wav: Vec<f64>,
   let threshold = threshold.unwrap_or(world_kThreshold); // default: 0.85
 
   let fft_size = match fft_size {
-    Some(f) => f,
+    Some(fft_size) => fft_size,
     None => {
-      /*
-        if fft_size is None:
-            fft_size0 = get_cheaptrick_fft_size(fs, default_f0_floor)
-        else:
-            fft_size0 = fft_size
-      */
       let default_f0_floor = world_kFloorF0; // default: 71.0
       let result = get_cheaptrick_fft_size(fs, Some(default_f0_floor));
       result.fft_size
@@ -360,13 +354,24 @@ pub fn d4c(wav: Vec<f64>,
   };
 
   let mut option = D4COption::default();
+  unsafe {
+    InitializeD4COption(&mut option);
+  }
+
   option.threshold = threshold;
 
   // FIXME -- Not sure this is correct allocation!
   // But I'm not sure these are the correct lengths...
-  let mut aperiodicity: Vec<f64> = vec![0.0f64; wav.len()];
+  // Shape is: (f0_length, fft_size0//2 + 1)
+  let size = f0.len() * (fft_size / 2 + 1) as usize;
+  let mut aperiodicity: Vec<f64> = vec![0.0f64; size];
 
   unsafe {
+    /*
+        D4C(&x[0], x_length, fs, &temporal_positions[0],
+        &f0[0], f0_length, fft_size0, &option,
+        cpp_aperiodicity)
+    */
     D4C(
       wav.as_ptr(),
       wav.len() as c_int,
@@ -702,10 +707,10 @@ mod tests {
     let f0 = audio.clone();
     let temporal = audio.clone();
 
-    /*let result = d4c(audio, f0, temporal, 16000, None, None, None);
+    let result = d4c(audio, f0, temporal, 16000, None, None, None);
 
     println!("Result aperiod len: {:?}", result.aperiodicity.len());
-    println!("Result aperiod first item: {:?}", result.aperiodicity[0]);*/
+    println!("Result aperiod first item: {:?}", result.aperiodicity[0]);
   }
 
   #[test]
