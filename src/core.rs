@@ -19,10 +19,16 @@ use super::GetF0FloorForCheapTrick;
 use super::GetFFTSizeForCheapTrick;
 use super::InitializeCheapTrickOption;
 
+// CodeSpectralEnvelope
+use super::CodeSpectralEnvelope;
+
 // D4C
 use super::D4C;
 use super::D4COption;
 use super::InitializeD4COption;
+
+// DecodeSpectralEnvelope
+use super::DecodeSpectralEnvelope;
 
 // Harvest
 use super::GetSamplesForHarvest;
@@ -135,7 +141,48 @@ pub fn cheaptrick(wav: Vec<f64>,
 }
 
 /*
+def code_spectral_envelope(*args, **kwargs): # real signature unknown
+    """
+    Reduce dimensionality of spectral envelope.
 
+        Parameters
+        ----------
+        spectrogram : ndarray
+            Spectral envelope.
+        fs : int
+            Sample rate of input signal in Hz.
+        number_of_dimensions : int
+            Number of dimentions of coded spectral envelope
+
+        Returns
+        -------
+        coded_spectral_envelope : ndarray
+            Coded spectral envelope.
+    """
+    pass
+
+    pub fn CodeSpectralEnvelope(
+        spectrogram: *const *const f64,
+        f0_length: ::std::os::raw::c_int,
+        fs: ::std::os::raw::c_int,
+        fft_size: ::std::os::raw::c_int,
+        number_of_dimensions: ::std::os::raw::c_int,
+        coded_spectral_envelope: *mut *mut f64,
+    );
+*/
+
+pub struct CodeSpectralEnvelopeResult {
+  pub coded_spectral_envelope: Vec<f64>,
+}
+
+pub fn code_spectral_envelope() -> CodeSpectralEnvelopeResult {
+
+  CodeSpectralEnvelopeResult {
+    coded_spectral_envelope: vec![],
+  }
+}
+
+/*
 def d4c(*args, **kwargs): # real signature unknown
     """
     D4C aperiodicity estimation algorithm.
@@ -223,6 +270,47 @@ pub fn d4c(wav: Vec<f64>,
 
   D4CResult {
     aperiodicity: vec![],
+  }
+}
+
+/*
+def decode_spectral_envelope(*args, **kwargs): # real signature unknown
+    """
+    Restore full dimensionality of coded spectral envelope.
+
+        Parameters
+        ----------
+        coded_spectral_envelope : ndarray
+            Coded spectral envelope.
+        fs : int
+            Sample rate of input signal in Hz.
+        fft_size : int
+            FFT size corresponding to the full dimensional spectral envelope.
+
+        Returns
+        -------
+        spectrogram : ndarray
+            Spectral envelope.
+    """
+    pass
+
+    pub fn DecodeSpectralEnvelope(
+        coded_spectral_envelope: *const *const f64,
+        f0_length: ::std::os::raw::c_int,
+        fs: ::std::os::raw::c_int,
+        fft_size: ::std::os::raw::c_int,
+        number_of_dimensions: ::std::os::raw::c_int,
+        spectrogram: *mut *mut f64,
+    );
+*/
+
+pub struct DecodeSpectralEnvelopeResult {
+  pub spectrogram: Vec<f64>,
+}
+
+pub fn decode_spectral_envelope_result() -> DecodeSpectralEnvelopeResult {
+  DecodeSpectralEnvelopeResult {
+    spectrogram: vec![],
   }
 }
 
