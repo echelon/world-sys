@@ -17,8 +17,8 @@ both configurations.
 
 NB: `LIBCLANG_PATH` is critical to set!
 
-- `LIBCLANG_PATH=/usr/lib/llvm-3.9/lib/` on the laptop
-- `LIBCLANG_PATH=/usr/lib/llvm-3.9/lib cargo test`
+- `LIBCLANG_PATH=/usr/lib/llvm-3.9/lib cargo test` (laptop)
+- `LIBCLANG_PATH=/usr/lib/llvm-6.0/lib/ cargo test` (desktop)
 
 Also appears to work if I build the library independent of Rust bindgen, then statically link 
 from build.rs:
@@ -36,6 +36,12 @@ Debugging
 To use GDB to debug, follow these instructions:
 
 http://smallcultfollowing.com/babysteps/blog/2018/09/21/office-hours-0-debugging-with-gdb/
+
+List the binary in test build/exec,
+> `LIBCLANG_PATH=/usr/lib/llvm-6.0/lib/ cargo test -v`
+
+Run under GDB,
+> `RUST_TEST_THREADS=1 rust-gdb {the binary}`
 
 TODO / WIP
 ----------

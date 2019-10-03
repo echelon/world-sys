@@ -173,8 +173,25 @@ pub fn cheaptrick(wav: Vec<f64>,
   // FIXME -- Not sure this is correct allocation!
   // But I'm not sure these are the correct lengths...
   // pyworld shape is: (f0_length, option.fft_size//2 + 1)
-  let size = f0.len() * (fft_size/2 + 1) as usize;
+  let n = f0.len();
+  let m = (fft_size/2 + 1) as usize;
+
+  println!("Fft size: {}", fft_size);
+  println!("m: {}", m);
+  //unimplemented!("test");
+
+  let size = n * m;
   let mut spectrogram: Vec<f64> = vec![0.0f64; size];
+  let mut spectrogram: Vec<f64> = vec![0.0f64; 10241 * 5130];
+  //let mut spectrogram = vec![vec![0.0f64; 1024] ; 550513]; // SEGFAULT
+  //let mut spectrogram = Box::new([0.0f64; size]); // DOES NOT COMPILE
+
+  //let mut spectrogram: Vec<f64> = vec![0.0f64; size].into_boxed_slice(); SEGFAULT (rewrote code)
+
+  // NB: This yields a stack overflow instead of a segfault!
+  //let mut spectrogram = [[0.0f64; 1024] ; 513];
+
+  println!("Spectrogram length: {}", spectrogram.len());
 
   /*
     CheapTrick(&x[0], x_length, fs, &temporal_positions[0],
@@ -205,7 +222,8 @@ pub fn cheaptrick(wav: Vec<f64>,
   }
 
   CheapTrickResult {
-    spectrogram,
+    //spectrogram,
+    spectrogram: vec![],
   }
 }
 
