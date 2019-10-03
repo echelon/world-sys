@@ -43,6 +43,37 @@ TODO: ALGORITHM TO GET VOICE TRANSFORMATION:
         - pyworld.synthesize
     - [librosa.resample (upsample)]
     - [wav things]
+
+================================================
+Our bindings,
+
+- cheaptrick()
+    - InitializeCheapTrickOptions()
+    - GetFFTSizeForCheapTrick() - branch case, untested
+    - CheapTrick() - SEGFAULT
+
+- code_spectral_envelope()
+    - INCOMPLETE
+    - CodeSpectralEnvelope() - SEGFAULT
+
+- d4c()
+    - get_cheaptrick_fft_size() - branch case, untested
+    - InitializeD4COption
+    - D4C() - SEGFAULT
+
+- decode_spectral_envelope()
+    - INCOMPLETE
+
+- get_cheaptrick_fft_size() - TESTS WORK!
+    - GetFFTSizeForCheapTrick() - TESTS WORK!
+
+- harvest() - TESTS WORK!
+    - Harvest() - TESTS WORK!
+
+- synthesize()
+    - INCOMPLETE
+    - Synthesis() - UNTESTED
+
 */
 
 pub struct DecomposeResult {

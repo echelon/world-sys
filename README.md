@@ -33,6 +33,10 @@ Debugging
 - `nm -C libfoo.a` to list symbol names without mangling
 - `ar -t libfoo.a` to list object files
 
+To use GDB to debug, follow these instructions:
+
+http://smallcultfollowing.com/babysteps/blog/2018/09/21/office-hours-0-debugging-with-gdb/
+
 TODO / WIP
 ----------
 - [ ] Test entire API surface area

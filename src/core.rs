@@ -181,7 +181,17 @@ pub fn cheaptrick(wav: Vec<f64>,
         &f0[0], f0_length, &option, cpp_spectrogram)
     return np.array(spectrogram, dtype=np.float64)
   */
-  /*unsafe {
+  unsafe {
+    /*
+    Harvest(
+      wav.as_ptr(),
+      wav.len() as c_int,
+      fs as c_int,
+      &mut option,
+      temporal_positions.as_mut_ptr() as *mut _,
+      estimated_f0_contour.as_mut_ptr() as *mut _,
+    );
+     */
     CheapTrick(
       wav.as_ptr(),
       wav.len() as c_int,
@@ -189,10 +199,10 @@ pub fn cheaptrick(wav: Vec<f64>,
       temporal_postions.as_ptr(),
       f0.as_ptr(),
       f0.len() as c_int,
-      &option,
+      &mut option,
       spectrogram.as_mut_ptr() as *mut _,
     );
-  }*/
+  }
 
   CheapTrickResult {
     spectrogram,
@@ -372,7 +382,7 @@ pub fn d4c(wav: Vec<f64>,
         &f0[0], f0_length, fft_size0, &option,
         cpp_aperiodicity)
     */
-    D4C(
+    /*D4C(
       wav.as_ptr(),
       wav.len() as c_int,
       fs as c_int,
@@ -382,7 +392,7 @@ pub fn d4c(wav: Vec<f64>,
       fft_size as c_int,
       &option,
       aperiodicity.as_mut_ptr() as *mut _,
-    );
+    );*/
   }
 
   D4CResult {
@@ -425,7 +435,7 @@ pub struct DecodeSpectralEnvelopeResult {
   pub spectrogram: Vec<f64>,
 }
 
-pub fn decode_spectral_envelope_result() -> DecodeSpectralEnvelopeResult {
+pub fn decode_spectral_envelope() -> DecodeSpectralEnvelopeResult {
   DecodeSpectralEnvelopeResult {
     spectrogram: vec![],
   }
@@ -707,7 +717,7 @@ mod tests {
     let f0 = audio.clone();
     let temporal = audio.clone();
 
-    let result = d4c(audio, f0, temporal, 16000, None, None, None);
+    let result = d4c(audio, f0, temporal, 16000, None, None, Some(8));
 
     println!("Result aperiod len: {:?}", result.aperiodicity.len());
     println!("Result aperiod first item: {:?}", result.aperiodicity[0]);
