@@ -8,6 +8,7 @@
 //!
 
 use std::os::raw::c_int;
+use std::ptr;
 
 // Constants
 use super::world_kCeilF0;
@@ -80,6 +81,9 @@ def cheaptrick(*args, **kwargs): # real signature unknown
     """
     pass
 
+void CheapTrick(const double *x, int x_length, int fs,
+    const double *temporal_positions, const double *f0, int f0_length,
+    const CheapTrickOption *option, double **spectrogram) {
 
 extern "C" {
     pub fn CheapTrick(
@@ -189,15 +193,21 @@ pub fn cheaptrick(wav: Vec<f64>,
   //let mut spectrogram: Vec<f64> = vec![0.0f64; size].into_boxed_slice(); SEGFAULT (rewrote code)
 
   // NB: This yields a stack overflow instead of a segfault!
-  //let mut spectrogram = [[0.0f64; 1024] ; 513];
+  let mut spectrogram = [[0.0f64; 1024] ; 513];
 
-  println!("Spectrogram length: {}", spectrogram.len());
+  //let mut spectrogram : *mut f64 = ptr::null();
+  let mut ptr = ::std::ptr::null_mut();
+  let spectrogram: *mut *mut f64 = &mut ptr as *mut *mut _;
+
+  //println!("Spectrogram length: {}", spectrogram.len());
 
   /*
     CheapTrick(&x[0], x_length, fs, &temporal_positions[0],
         &f0[0], f0_length, &option, cpp_spectrogram)
     return np.array(spectrogram, dtype=np.float64)
   */
+
+  //let ptr: *mut *mut f64 = &mut ptr as *mut *mut _;
   unsafe {
     /*
     Harvest(
@@ -217,7 +227,9 @@ pub fn cheaptrick(wav: Vec<f64>,
       f0.as_ptr(),
       f0.len() as c_int,
       &mut option,
-      spectrogram.as_mut_ptr() as *mut _,
+      //spectrogram.as_mut_slice().as_mut_ptr() as *mut _,
+      //spectrogram.as_ptr() as *mut _,
+      spectrogram,
     );
   }
 

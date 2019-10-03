@@ -74,6 +74,16 @@ Our bindings,
     - INCOMPLETE
     - Synthesis() - UNTESTED
 
+================================================
+
+Vec<Vec<T>> is not tightly packed:
+https://stackoverflow.com/a/37316739
+
+FFI multidimensional array:
+https://users.rust-lang.org/t/solved-ffi-convert-pointer-to-a-multidimensional-array/10740
+
+Hmm, in/out params and null ptrs,
+https://www.reddit.com/r/rust/comments/da0szc/how_to_represent_a_c_double_pointer_in_rust_ffi/
 */
 
 pub struct DecomposeResult {
