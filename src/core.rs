@@ -391,8 +391,11 @@ pub fn d4c(wav: Vec<f64>,
   // FIXME -- Not sure this is correct allocation!
   // But I'm not sure these are the correct lengths...
   // Shape is: (f0_length, fft_size0//2 + 1)
-  let size = f0.len() * (fft_size / 2 + 1) as usize;
-  let mut aperiodicity: Vec<f64> = vec![0.0f64; size];
+  //let size = f0.len() * (fft_size / 2 + 1) as usize;
+  //let mut aperiodicity: Vec<f64> = vec![0.0f64; size];
+  // https://github.com/neithanmo/csound-rs/blob/46b50fa94ebb869d051b7d7f74555c76ecd4cbe9/src/callbacks.rs
+  let mut ptr = ::std::ptr::null_mut();
+  let aperiodicity: *mut *mut f64 = &mut ptr as *mut *mut _;
 
   unsafe {
     /*
@@ -400,7 +403,7 @@ pub fn d4c(wav: Vec<f64>,
         &f0[0], f0_length, fft_size0, &option,
         cpp_aperiodicity)
     */
-    /*D4C(
+    D4C(
       wav.as_ptr(),
       wav.len() as c_int,
       fs as c_int,
@@ -409,12 +412,13 @@ pub fn d4c(wav: Vec<f64>,
       f0.len() as c_int,
       fft_size as c_int,
       &option,
-      aperiodicity.as_mut_ptr() as *mut _,
-    );*/
+      aperiodicity,
+    );
   }
 
   D4CResult {
-    aperiodicity,
+    //aperiodicity,
+    aperiodicity: vec![],
   }
 }
 
