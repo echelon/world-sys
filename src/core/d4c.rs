@@ -223,11 +223,13 @@ which is expected to be allocated by the caller. Bindgen wrapped this as
   }*/
 
   let mut outer : Vec<*mut f64> = Vec::new();
+
+  let mut inner : Vec<f64> = Vec::new();
   for i in 0 .. 100 {
-    let mut inner : Vec<f64> = Vec::new();
-    for i in 0 .. 100 {
-      inner.push(1234.5f64);
-    }
+    inner.push(1234.5f64);
+  }
+
+  for i in 0 .. 50_000 {
     outer.push(inner.as_mut_ptr());
   }
 
