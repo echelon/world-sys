@@ -50,7 +50,7 @@ Our bindings,
 - cheaptrick()
     - InitializeCheapTrickOptions()
     - GetFFTSizeForCheapTrick() - branch case, untested
-    - CheapTrick() - STACK OVERFLOW (instead of SEGFAULT)
+    - CheapTrick() - TEST WORKS (VECVEC!)
 
 - code_spectral_envelope()
     - INCOMPLETE
