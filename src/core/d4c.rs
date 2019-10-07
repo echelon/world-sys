@@ -217,9 +217,18 @@ which is expected to be allocated by the caller. Bindgen wrapped this as
   let mut ptr = [[50.0f64; 1000]; 1000];*/
 
   // TODO: This is how we do it!
-  let mut ptr : Vec<*mut f64> = Vec::new();
-  for i in 0 .. 100_000 {
+  /*let mut ptr : Vec<*mut f64> = Vec::new();
+  for i in 0 .. 100 {
     ptr.push(ptr::null_mut());
+  }*/
+
+  let mut outer : Vec<*mut f64> = Vec::new();
+  for i in 0 .. 100 {
+    let mut inner : Vec<f64> = Vec::new();
+    for i in 0 .. 100 {
+      inner.push(1234.5f64);
+    }
+    outer.push(inner.as_mut_ptr());
   }
 
   //let aperiodicity= ptr as *mut _;
@@ -258,7 +267,7 @@ value requires 8000000 bytes, which is more than max-value-size
       f0.len() as c_int,
       fft_size as c_int,
       &option,
-      aperiodicity,
+      outer.as_mut_ptr(),
     );
   }
 
