@@ -59,7 +59,7 @@ Our bindings,
 - d4c()
     - get_cheaptrick_fft_size() - branch case, untested
     - InitializeD4COption
-    - D4C() - SEGFAULT
+    - D4C() - TESTS WORK! (REALLY WORK W/ VEC<VEC<F64>>)
 
 - decode_spectral_envelope()
     - INCOMPLETE

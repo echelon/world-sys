@@ -105,6 +105,8 @@ mod tests {
 
     let result = d4c(audio, f0, temporal, 16000, None, None, Some(8));
 
+    assert!(result.aperiodicity.len() > 0);
+
     // NB: Just spot checking the array for now.
     // Should improve this to do an actual calculation.
     assert_ne!(0.0f64, result.aperiodicity[0][0]);
