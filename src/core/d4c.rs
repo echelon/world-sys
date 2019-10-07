@@ -143,7 +143,6 @@ pub fn d4c(wav: Vec<f64>,
   }
 }
 
-
 #[cfg(test)]
 mod tests {
   use super::*;
