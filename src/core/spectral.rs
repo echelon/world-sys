@@ -260,23 +260,24 @@ pub fn code_spectral_envelope(spectrogram: &Vec<Vec<f64>>,
                               fs: i32,
                               number_of_dimensions: u32) -> CodeSpectralEnvelopeResult {
 
-  let fft_size = 1; // TODO
+  let sp_length = spectrogram.len(); // FIXME UNSAFE
 
-  // FIXME -- Not sure this is correct allocation!
-  // But I'm not sure these are the correct lengths...
-  //let mut coded_spectral_envelope: Vec<Vec<f64>> = vec![0.0f64; spectrogram.len()];
+  // NB(from pyworld):
+  // cdef int fft_size = (<int>spectrogram.shape[1] - 1)*2
+  let fft_size = spectrogram[0].len();
+  let fft_size = (sp_length - 1) * 2;
 
   let mut input : Vec<*const f64> = Vec::new();
   for x in spectrogram.iter() {
     input.push(x.as_ptr());
   }
 
-
   let mut results: Vec<Vec<f64>> = Vec::new();
   let mut outer : Vec<*mut f64> = Vec::new();
 
-  let n = 1000;
-  let m = 1000;
+  // TODO: These may not be correct
+  let n = sp_length;
+  let m = number_of_dimensions;
 
   for i in 0 .. n {
     let mut inner : Vec<f64> = Vec::new();
@@ -290,7 +291,7 @@ pub fn code_spectral_envelope(spectrogram: &Vec<Vec<f64>>,
   unsafe {
     CodeSpectralEnvelope(
       input.as_ptr(),
-      input.len() as c_int, //FIXME: WAT f0_length!??!
+      input.len() as c_int,
       fs as c_int,
       fft_size as c_int,
       number_of_dimensions as c_int,
