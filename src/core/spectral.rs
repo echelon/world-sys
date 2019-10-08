@@ -304,37 +304,6 @@ pub fn code_spectral_envelope(spectrogram: &Vec<Vec<f64>>,
   }
 }
 
-/*
-def decode_spectral_envelope(*args, **kwargs): # real signature unknown
-    """
-    Restore full dimensionality of coded spectral envelope.
-
-        Parameters
-        ----------
-        coded_spectral_envelope : ndarray
-            Coded spectral envelope.
-        fs : int
-            Sample rate of input signal in Hz.
-        fft_size : int
-            FFT size corresponding to the full dimensional spectral envelope.
-
-        Returns
-        -------
-        spectrogram : ndarray
-            Spectral envelope.
-    """
-    pass
-
-    pub fn DecodeSpectralEnvelope(
-        coded_spectral_envelope: *const *const f64,
-        f0_length: ::std::os::raw::c_int,
-        fs: ::std::os::raw::c_int,
-        fft_size: ::std::os::raw::c_int,
-        number_of_dimensions: ::std::os::raw::c_int,
-        spectrogram: *mut *mut f64,
-    );
-*/
-
 pub struct DecodeSpectralEnvelopeResult {
   pub spectrogram: Vec<Vec<f64>>,
 }
@@ -408,12 +377,45 @@ mod tests {
       128
     );
 
-    assert!(result.coded_spectral_envelope.len()  > 0);
+    // Check dimensions
+    assert!(result.coded_spectral_envelope.len() > 0);
+    assert!(result.coded_spectral_envelope[0].len() > 0);
 
     // NB: Just spot checking the array for now.
     // Should improve this to do an actual calculation.
-    //assert_ne!(0.0f64, result.spectrogram[0][0]);
-    //assert_ne!(0.0f64, result.spectrogram[1][0]);
-    //assert_ne!(0.0f64, result.spectrogram[1][1]);
+    //assert_ne!(0.0f64, result.coded_spectral_envelope[0][0]);
+    //assert_ne!(0.0f64, result.coded_spectral_envelope[1][0]);
+    //assert_ne!(0.0f64, result.coded_spectral_envelope[1][1]);
+  }
+
+  #[test]
+  pub fn test_decode_spectral_envelope() {
+    let mut envelope = Vec::new();
+
+    for i in 0..500 {
+      let mut inner = Vec::new();
+
+      for j in 0..500 {
+        let v = (i % 100) as f64;
+        inner.push(v);
+      }
+      envelope.push(inner);
+    }
+
+    let result = decode_spectral_envelope(
+      &envelope,
+      16_000,
+      128
+    );
+
+    // Check dimensions
+    assert!(result.spectrogram.len() > 0);
+    assert!(result.spectrogram[0].len() > 0);
+
+    // NB: Just spot checking the array for now.
+    // Should improve this to do an actual calculation.
+    //assert_ne!(0.0f64, result.coded_spectral_envelope[0][0]);
+    //assert_ne!(0.0f64, result.coded_spectral_envelope[1][0]);
+    //assert_ne!(0.0f64, result.coded_spectral_envelope[1][1]);
   }
 }
