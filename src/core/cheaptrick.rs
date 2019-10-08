@@ -127,7 +127,6 @@ mod tests {
   use super::*;
   use std::mem;
 
-  // TODO: I think this is stack overflowing instead of segfaulting now.
   #[test]
   pub fn test_cheaptrick() {
     let mut audio = Vec::new();
