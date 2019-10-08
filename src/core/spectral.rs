@@ -336,12 +336,50 @@ def decode_spectral_envelope(*args, **kwargs): # real signature unknown
 */
 
 pub struct DecodeSpectralEnvelopeResult {
-  pub spectrogram: Vec<f64>,
+  pub spectrogram: Vec<Vec<f64>>,
 }
 
-pub fn decode_spectral_envelope() -> DecodeSpectralEnvelopeResult {
+pub fn decode_spectral_envelope(coded_spectral_envelope: &Vec<Vec<f64>>,
+                                fs: i32,
+                                fft_size: i32) -> DecodeSpectralEnvelopeResult {
+
+  let sp_length = coded_spectral_envelope.len();
+  let number_of_dimensions = coded_spectral_envelope[0].len(); // TODO UNSAFE
+
+  let mut input : Vec<*const f64> = Vec::new();
+  for x in coded_spectral_envelope.iter() {
+    input.push(x.as_ptr());
+  }
+
+  let mut results: Vec<Vec<f64>> = Vec::new();
+  let mut outer : Vec<*mut f64> = Vec::new();
+
+  // TODO: These may not be correct
+  let n = sp_length;
+  let m = sp_length;
+
+  for i in 0 .. n {
+    let mut inner : Vec<f64> = Vec::new();
+    for i in 0 .. m {
+      inner.push(0.0f64);
+    }
+    outer.push(inner.as_mut_ptr());
+    results.push(inner);
+  }
+
+  unsafe {
+    CodeSpectralEnvelope(
+      input.as_ptr(),
+      input.len() as c_int,
+      fs as c_int,
+      fft_size as c_int,
+      number_of_dimensions as c_int,
+      outer.as_mut_ptr(),
+    );
+  }
+
   DecodeSpectralEnvelopeResult {
-    spectrogram: vec![],
+    spectrogram: results,
   }
 }
 
