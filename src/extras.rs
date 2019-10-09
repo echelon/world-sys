@@ -53,8 +53,7 @@ Our bindings,
     - CheapTrick() - TEST WORKS (VECVEC!)
 
 - code_spectral_envelope()
-    - INCOMPLETE
-    - CodeSpectralEnvelope() - SEGFAULT
+    - CodeSpectralEnvelope() - TEST WORKS
 
 - d4c()
     - get_cheaptrick_fft_size() - branch case, untested
@@ -62,7 +61,7 @@ Our bindings,
     - D4C() - TESTS WORK! (REALLY WORK W/ VEC<VEC<F64>>)
 
 - decode_spectral_envelope()
-    - INCOMPLETE
+    - TEST WORKS
 
 - get_cheaptrick_fft_size() - TESTS WORK!
     - GetFFTSizeForCheapTrick() - TESTS WORK!
