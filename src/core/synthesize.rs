@@ -18,29 +18,70 @@ pub struct SynthesizeResult {
   output_waveform: Vec<f64>,
 }
 
+#[derive(Debug)]
+pub enum SynthesizeError {
+  WrongOuterDimension {
+    f0_len: usize,
+    aperiodicity_len: usize,
+    spectrogram_len: usize,
+  },
+  WrongInnerDimension {
+    aperiodicity_len: usize,
+    spectrogram_len: usize,
+  }
+}
+
 pub fn synthesize(f0: &Vec<f64>,
   spectrogram: &Vec<Vec<f64>>, // 2D
-  aperiodicity: Vec<Vec<f64>>, // 2D
+  aperiodicity: &Vec<Vec<f64>>, // 2D
   fs: i32,
-  frame_period: Option<f64>) -> SynthesizeResult {
+  frame_period: Option<f64>) -> Result<SynthesizeResult,SynthesizeError> {
+
+  if f0.len() != spectrogram.len()
+      || f0.len() != aperiodicity.len() {
+    return Err(SynthesizeError::WrongOuterDimension {
+      f0_len: f0.len(),
+      aperiodicity_len: aperiodicity.len(),
+      spectrogram_len: spectrogram.len(),
+    });
+  }
+
+  // TODO: Unsafe.
+  if aperiodicity[0].len() != spectrogram[0].len() {
+    return Err(SynthesizeError::WrongInnerDimension {
+      aperiodicity_len: aperiodicity[0].len(),
+      spectrogram_len: spectrogram[0].len(),
+    });
+  }
 
   // Defaults
   let frame_period = frame_period.unwrap_or(5.0f64);
 
   // NB(from pyworld):
-  let y_length = f0.len() * frame_period * fs / 1000;
+  // y_length = int(f0_length * frame_period * fs / 1000)
+  let y_length = f0.len() as f64 * frame_period * fs as f64;
+  let y_length = (y_length / 1000.0) as usize;
+
+  // NB(from pyworld):
+  // cdef int fft_size = (<int>spectrogram.shape[1] - 1)*2
+  let fft_size = (spectrogram[0].len() - 1) * 2; // FIXME UNSAFE
 
   /*
-  cdef int f0_length = <int>len(f0)
-  y_length = int(f0_length * frame_period * fs / 1000)
-  cdef int fft_size = (<int>spectrogram.shape[1] - 1)*2
-  cdef np.ndarray[double, ndim=1, mode="c"] y = \
-  np.zeros(y_length, dtype=np.dtype('float64'))
-  */
-  let fft_size = (spectrogram.len() - 1) * 2; // TODO: Incorrect wrt multidimensional
+    cdef int f0_length = <int>len(f0)
+    cdef np.ndarray[double, ndim=1, mode="c"] y = \
+        np.zeros(y_length, dtype=np.dtype('float64'))
 
-  // FIXME -- Not sure this is correct allocation!
-  // But I'm not sure these are the correct lengths...
+    cdef double[:, ::1] spectrogram0 = spectrogram
+    cdef double[:, ::1] aperiodicity0 = aperiodicity
+    cdef np.intp_t[:] tmp = np.zeros(f0_length, dtype=np.intp)
+    cdef np.intp_t[:] tmp2 = np.zeros(f0_length, dtype=np.intp)
+    cdef double **cpp_spectrogram = <double**> (<void*> &tmp[0])
+    cdef double **cpp_aperiodicity = <double**> (<void*> &tmp2[0])
+    cdef np.intp_t i
+    for i in range(f0_length):
+        cpp_spectrogram[i] = &spectrogram0[i, 0]
+        cpp_aperiodicity[i] = &aperiodicity0[i, 0]
+  */
 
   /*
       Synthesis(&f0[0], f0_length, cpp_spectrogram,
@@ -67,9 +108,9 @@ pub fn synthesize(f0: &Vec<f64>,
     );
   }
 
-  SynthesizeResult {
+  Ok(SynthesizeResult {
     output_waveform: wav,
-  }
+  })
 }
 
 #[cfg(test)]
@@ -78,8 +119,16 @@ mod tests {
   use std::mem;
 
   #[test]
-  pub fn test_encode_spectral_envelope() {
+  pub fn test_synthesize() {
+    let mut f0 = Vec::new();
+
+    for i in 0..500 {
+      let v = (i % 100) as f64;
+      f0.push(v);
+    }
+
     let mut spectrogram = Vec::new();
+    let mut aperiodicity = Vec::new();
 
     for i in 0..500 {
       let mut inner = Vec::new();
@@ -88,18 +137,21 @@ mod tests {
         let v = (i % 100) as f64;
         inner.push(v);
       }
-      spectrogram.push(inner);
+
+      spectrogram.push(inner.clone());
+      aperiodicity.push(inner.clone());
     }
 
-    let result = code_spectral_envelope(
+    let result = synthesize(
+      &f0,
       &spectrogram,
+      &aperiodicity,
       16_000,
-      128
-    );
+      None,
+    ).unwrap();
 
     // Check dimensions
-    assert!(result.coded_spectral_envelope.len() > 0);
-    assert!(result.coded_spectral_envelope[0].len() > 0);
+    assert!(result.output_waveform.len() > 0);
 
     // NB: Just spot checking the array for now.
     // Should improve this to do an actual calculation.
