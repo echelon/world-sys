@@ -88,14 +88,18 @@ pub fn synthesize(f0: &Vec<f64>,
         cpp_aperiodicity, fft_size, frame_period, fs, y_length, &y[0])
   */
 
+  // TODO: This could be more efficient.
   let mut spectrogram2 : Vec<*const f64> = Vec::new();
   for x in spectrogram.iter() {
     spectrogram2.push(x.as_ptr());
   }
 
+  let mut aperiodicity2 : Vec<*const f64> = Vec::new();
+  for x in aperiodicity.iter() {
+    aperiodicity2.push(x.as_ptr());
+  }
 
   let mut wav: Vec<f64> = Vec::new();
-
   for i in 0 .. y_length {
     wav.push(0.0f64);
   }
@@ -105,7 +109,7 @@ pub fn synthesize(f0: &Vec<f64>,
       f0.as_ptr(),
       f0.len() as c_int,
       spectrogram2.as_ptr(),
-      aperiodicity.as_ptr() as *const _, // TODO: Does this work? I invented this! ----- ??????
+      aperiodicity2.as_ptr(),
       fft_size as c_int,
       frame_period,
       fs as c_int,
