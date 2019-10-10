@@ -57,31 +57,58 @@ pub fn synthesize(f0: &Vec<f64>,
   // Defaults
   let frame_period = frame_period.unwrap_or(5.0f64);
 
+  /*
+    cdef np.ndarray[double, ndim=1, mode="c"] y = \
+        np.zeros(y_length, dtype=np.dtype('float64'))
+  */
+  let f0_length = f0.len();
+
   // NB(from pyworld):
   // y_length = int(f0_length * frame_period * fs / 1000)
-  let y_length = f0.len() as f64 * frame_period * fs as f64;
-  let y_length = (y_length / 1000.0) as usize;
+  let y_length = f0_length as f64 * frame_period * fs as f64;
+  let y_length = (y_length / 1000.0).floor() as usize;
 
   // NB(from pyworld):
   // cdef int fft_size = (<int>spectrogram.shape[1] - 1)*2
   let fft_size = (spectrogram[0].len() - 1) * 2; // FIXME UNSAFE
 
   /*
-    cdef int f0_length = <int>len(f0)
-    cdef np.ndarray[double, ndim=1, mode="c"] y = \
-        np.zeros(y_length, dtype=np.dtype('float64'))
+    The simplest data layout might be a C contiguous array. This is the
+    default layout in NumPy and Cython arrays. C contiguous means that
+    the array data is continuous in memory (see below) and that
+    neighboring elements in the first dimension of the array are
+    furthest apart in memory, whereas neighboring elements in the last
+    dimension are closest together.
+
+    # This array is C contiguous
+    c_contig = np.arange(24).reshape((2,3,4))
+    cdef int[:, :, ::1] c_contiguous = c_contig
+
+    # This view is C contiguous
+    cdef int[:, :, ::1] c_contiguous = myview.copy()
+
+    # This view is Fortran contiguous
+    cdef int[::1, :] f_contiguous_slice = myview.copy_fortran()
+
+    -------------------------------------------------
 
     cdef double[:, ::1] spectrogram0 = spectrogram
     cdef double[:, ::1] aperiodicity0 = aperiodicity
+
+
     cdef np.intp_t[:] tmp = np.zeros(f0_length, dtype=np.intp)
     cdef np.intp_t[:] tmp2 = np.zeros(f0_length, dtype=np.intp)
+
     cdef double **cpp_spectrogram = <double**> (<void*> &tmp[0])
     cdef double **cpp_aperiodicity = <double**> (<void*> &tmp2[0])
     cdef np.intp_t i
+
+    # Outer dim becomes f0_length
     for i in range(f0_length):
         cpp_spectrogram[i] = &spectrogram0[i, 0]
         cpp_aperiodicity[i] = &aperiodicity0[i, 0]
   */
+
 
   /*
       Synthesis(&f0[0], f0_length, cpp_spectrogram,
@@ -97,7 +124,13 @@ pub fn synthesize(f0: &Vec<f64>,
   let mut aperiodicity2 : Vec<*const f64> = Vec::new();
   for x in aperiodicity.iter() {
     aperiodicity2.push(x.as_ptr());
+    //aperiodicity2.push(x.as_ptr()); // TODO FIXME
   }
+
+  /*
+    cdef np.ndarray[double, ndim=1, mode="c"] y = \
+        np.zeros(y_length, dtype=np.dtype('float64'))
+  */
 
   let mut wav: Vec<f64> = Vec::new();
   for i in 0 .. y_length {
@@ -107,14 +140,13 @@ pub fn synthesize(f0: &Vec<f64>,
   unsafe {
     Synthesis(
       f0.as_ptr(),
-      f0.len() as c_int,
+      f0_length as c_int,
       spectrogram2.as_ptr(),
       aperiodicity2.as_ptr(),
       fft_size as c_int,
       frame_period,
       fs as c_int,
       wav.len() as c_int,
-      //wav.as_mut_ptr() as *mut _,
       wav.as_mut_ptr(),
     );
   }
