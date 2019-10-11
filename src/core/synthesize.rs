@@ -212,5 +212,8 @@ mod tests {
     assert!(!result.output_waveform[0].is_nan());
     assert!(!result.output_waveform[1].is_nan());
     assert!(!result.output_waveform[2].is_nan());
+    assert!(!result.output_waveform[10].is_nan());
+    assert!(!result.output_waveform[20].is_nan());
+    assert!(!result.output_waveform[100].is_nan());
   }
 }
