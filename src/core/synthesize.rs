@@ -95,10 +95,19 @@ pub fn synthesize(f0: &Vec<f64>,
     cdef double[:, ::1] spectrogram0 = spectrogram
     cdef double[:, ::1] aperiodicity0 = aperiodicity
 
+  */
+
+  /*
 
     cdef np.intp_t[:] tmp = np.zeros(f0_length, dtype=np.intp)
     cdef np.intp_t[:] tmp2 = np.zeros(f0_length, dtype=np.intp)
 
+  */
+
+  //let tmp = Vec::with_capacity(f0_length);
+  //let tmp2 = Vec::with_capacity(f0_length);
+
+  /*
     cdef double **cpp_spectrogram = <double**> (<void*> &tmp[0])
     cdef double **cpp_aperiodicity = <double**> (<void*> &tmp2[0])
     cdef np.intp_t i
@@ -107,12 +116,6 @@ pub fn synthesize(f0: &Vec<f64>,
     for i in range(f0_length):
         cpp_spectrogram[i] = &spectrogram0[i, 0]
         cpp_aperiodicity[i] = &aperiodicity0[i, 0]
-  */
-
-
-  /*
-      Synthesis(&f0[0], f0_length, cpp_spectrogram,
-        cpp_aperiodicity, fft_size, frame_period, fs, y_length, &y[0])
   */
 
   // TODO: This could be more efficient.
@@ -124,8 +127,12 @@ pub fn synthesize(f0: &Vec<f64>,
   let mut aperiodicity2 : Vec<*const f64> = Vec::new();
   for x in aperiodicity.iter() {
     aperiodicity2.push(x.as_ptr());
-    //aperiodicity2.push(x.as_ptr()); // TODO FIXME
   }
+
+  /*
+      Synthesis(&f0[0], f0_length, cpp_spectrogram,
+        cpp_aperiodicity, fft_size, frame_period, fs, y_length, &y[0])
+  */
 
   /*
     cdef np.ndarray[double, ndim=1, mode="c"] y = \
@@ -136,6 +143,9 @@ pub fn synthesize(f0: &Vec<f64>,
   for i in 0 .. y_length {
     wav.push(0.0f64);
   }
+
+  println!("Wav (y) length: {}", wav.len());
+  println!("y_length: {}", y_length);
 
   unsafe {
     Synthesis(
@@ -165,7 +175,7 @@ mod tests {
   pub fn test_synthesize() {
     let mut f0 = Vec::new();
 
-    for i in 0..500 {
+    for i in 0..100 {
       let v = (i % 100) as f64;
       f0.push(v);
     }
@@ -173,10 +183,10 @@ mod tests {
     let mut spectrogram = Vec::new();
     let mut aperiodicity = Vec::new();
 
-    for i in 0..500 {
+    for i in 0..100 {
       let mut inner = Vec::new();
 
-      for j in 0..500 {
+      for j in 0..50 {
         let v = (i % 100) as f64;
         inner.push(v);
       }
