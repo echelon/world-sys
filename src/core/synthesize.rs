@@ -169,6 +169,7 @@ pub fn synthesize(f0: &Vec<f64>,
 #[cfg(test)]
 mod tests {
   use super::*;
+  use std::f64;
   use std::mem;
 
   #[test]
@@ -208,8 +209,8 @@ mod tests {
 
     // NB: Just spot checking the array for now.
     // Should improve this to do an actual calculation.
-    //assert_ne!(0.0f64, result.coded_spectral_envelope[0][0]);
-    //assert_ne!(0.0f64, result.coded_spectral_envelope[1][0]);
-    //assert_ne!(0.0f64, result.coded_spectral_envelope[1][1]);
+    assert!(!result.output_waveform[0].is_nan());
+    assert!(!result.output_waveform[1].is_nan());
+    assert!(!result.output_waveform[2].is_nan());
   }
 }
